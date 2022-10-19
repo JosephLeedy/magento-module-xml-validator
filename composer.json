@@ -1,0 +1,46 @@
+{
+  "name": "imaginationmedia/module-xml-validator",
+  "description": "Adds a console command for validating XML files against their configured schema",
+  "type": "magento2-module",
+  "version": "0.1.0",
+  "license": "OSL-3.0",
+  "require": {
+    "php": "^7.4 || ^8.0",
+    "composer/composer": "^2.2",
+    "magento/framework": "~103.0.0",
+    "symfony/console": "^4.4",
+    "symfony/polyfill-php80": "^1.24"
+  },
+  "autoload": {
+    "files": [
+      "src/registration.php"
+    ],
+    "psr-4": {
+      "ImaginationMedia\\XmlValidator\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "ImaginationMedia\\XmlValidator\\Test\\": "test/"
+    }
+  },
+  "authors": [
+    {
+      "role": "Developer",
+      "name": "Joseph Leedy",
+      "email": "joseph@imaginationmedia.com"
+    }
+  ],
+  "config": {
+    "sort-packages": true,
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  },
+  "repositories": {
+    "magento": {
+      "type": "composer",
+      "url": "https://repo.magento.com/"
+    }
+  }
+}
