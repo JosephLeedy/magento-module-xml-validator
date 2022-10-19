@@ -7,6 +7,7 @@
     <arg name="colors"/>
     <arg value="sp"/>
     <file>./src</file>
+    <file>./test</file>
     <rule ref="PSR12"/>
     <rule ref="Magento2">
         <!-- Disable rules requiring type annotations made redundant by type hints and return types -->
@@ -18,5 +19,8 @@
         <exclude name="Magento2.Commenting.ClassPropertyPHPDocFormatting.Missing"/>
         <!-- Suppress warning about PSR-12-style control structures -->
         <exclude name="PSR2.ControlStructures.ControlStructureSpacing.SpacingAfterOpenBrace"/>
+    </rule>
+    <rule ref="Magento2.PHP.FinalImplementation.FoundFinal">
+        <exclude-pattern>./test/*</exclude-pattern>
     </rule>
 </ruleset>
