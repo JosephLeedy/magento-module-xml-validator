@@ -13,7 +13,7 @@ class ValidateXmlCommand extends Command
 {
     public const COMMAND_NAME = 'dev:xml:validate';
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName(self::COMMAND_NAME);
         $this->setDescription('Validates an XML file against its configured schema');
