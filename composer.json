@@ -6,9 +6,12 @@
   "license": "OSL-3.0",
   "require": {
     "php": "^7.4 || ^8.0",
+    "ext-libxml": "*",
+    "ext-pcre": "*",
     "composer/composer": "^2.2",
     "magento/framework": "~103.0.0",
     "symfony/console": "^4.4 || ^5.4 || ^6.0",
+    "symfony/finder": "^4.4 || ^5.4 || ^6.0",
     "symfony/polyfill-php80": "^1.24"
   },
   "require-dev": {
