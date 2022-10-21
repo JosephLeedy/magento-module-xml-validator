@@ -32,8 +32,8 @@ final class ValidateXmlCommandTest extends TestCase
         $objectManager = Bootstrap::getObjectManager();
         $validateXmlCommand = $objectManager->create(ValidateXmlCommand::class);
         $expectedArguments = [
-            'files' => new InputArgument(
-                'files',
+            'paths' => new InputArgument(
+                'paths',
                 InputArgument::REQUIRED | InputArgument::IS_ARRAY,
                 'List of files or directories to validate'
             )

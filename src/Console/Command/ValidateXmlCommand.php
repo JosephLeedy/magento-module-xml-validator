@@ -18,7 +18,7 @@ class ValidateXmlCommand extends Command
         $this->setName(self::COMMAND_NAME);
         $this->setDescription('Validates an XML file against its configured schema');
         $this->addArgument(
-            'files',
+            'paths',
             InputArgument::REQUIRED | InputArgument::IS_ARRAY,
             'List of files or directories to validate'
         );
