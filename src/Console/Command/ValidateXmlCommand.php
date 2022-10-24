@@ -6,6 +6,7 @@ namespace ImaginationMedia\XmlValidator\Console\Command;
 
 use DOMDocument;
 use Exception;
+use LibXMLError;
 use Magento\Framework\Config\Dom;
 use Magento\Framework\DomDocument\DomDocumentFactory;
 use Magento\Framework\Filesystem\DriverInterface;
@@ -20,6 +21,7 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\FinderFactory;
 
 use function __;
+use function array_map;
 use function array_unshift;
 use function array_walk;
 use function count;
@@ -27,6 +29,8 @@ use function libxml_clear_errors;
 use function libxml_get_errors;
 use function libxml_use_internal_errors;
 use function preg_match;
+use function rtrim;
+use function sprintf;
 use function strrpos;
 use function substr;
 
@@ -151,20 +155,25 @@ class ValidateXmlCommand extends Command
 
         $errors = libxml_get_errors();
 
+        libxml_use_internal_errors(false);
         libxml_clear_errors();
-
-        if (count($errors) > 0) {
-            array_unshift($errors, (string)__('Could not load %1 as XML. Errors:', $fileName));
-
-            $symfonyStyle->error($errors);
-
-            return false;
-        }
 
         preg_match('/xsi:noNamespaceSchemaLocation=\s*"(urn:[^"]+)"/s', $xml, $schemaLocations);
 
         if (count($schemaLocations) === 0) {
             $symfonyStyle->warning((string)__('XML file "%1" does not have a Magento schema defined', $fileName));
+
+            return false;
+        }
+
+        if (count($errors) > 0) {
+            $errors = array_map(
+                static fn(LibXMLError $error): string
+                    => sprintf('Line %d: %s', $error->line, rtrim($error->message, "\n")),
+                $errors
+            );
+
+            $this->outputErrorsToConsole($errors, $symfonyStyle);
 
             return false;
         }
@@ -177,9 +186,7 @@ class ValidateXmlCommand extends Command
         $errors = Dom::validateDomDocument($domDocument, $schemaLocations[1], "Line %line%: %message%\n");
 
         if (count($errors) > 0) {
-            array_unshift($errors, (string)__('Invalid XML. Errors:'));
-
-            $symfonyStyle->error($errors);
+            $this->outputErrorsToConsole($errors, $symfonyStyle);
 
             return false;
         }
@@ -187,5 +194,12 @@ class ValidateXmlCommand extends Command
         $symfonyStyle->success((string)__('XML is valid.'));
 
         return true;
+    }
+
+    private function outputErrorsToConsole(array $errors, SymfonyStyle $symfonyStyle): void
+    {
+        array_unshift($errors, (string)__('Invalid XML. Errors:'));
+
+        $symfonyStyle->error($errors);
     }
 }
