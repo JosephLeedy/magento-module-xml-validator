@@ -196,6 +196,9 @@ class ValidateXmlCommand extends Command
         return true;
     }
 
+    /**
+     * @param string[] $errors
+     */
     private function outputErrorsToConsole(array $errors, SymfonyStyle $symfonyStyle): void
     {
         array_unshift($errors, (string)__('Invalid XML. Errors:'));
