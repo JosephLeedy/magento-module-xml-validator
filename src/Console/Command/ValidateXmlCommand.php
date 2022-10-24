@@ -24,7 +24,9 @@ use function __;
 use function array_map;
 use function array_unshift;
 use function array_walk;
+use function basename;
 use function count;
+use function in_array;
 use function libxml_clear_errors;
 use function libxml_get_errors;
 use function libxml_use_internal_errors;
@@ -37,6 +39,11 @@ use function substr;
 class ValidateXmlCommand extends Command
 {
     public const COMMAND_NAME = 'dev:xml:validate';
+    private const EXCLUDED_FILES = [
+        '.phpcs.xml',
+        'phpcs.xml',
+        'phpunit.xml',
+    ];
 
     private SymfonyStyleFactory $symfonyStyleFactory;
     private DomDocumentFactory $domDocumentFactory;
@@ -92,10 +99,19 @@ class ValidateXmlCommand extends Command
             $paths,
             function (string $path) use ($symfonyStyle, $finder, &$fileCount, &$validFiles): void {
                 if ($this->driver->isFile($path)) {
+                    $fileName = basename($path);
+
+                    if (in_array($fileName, self::EXCLUDED_FILES)) {
+                        $symfonyStyle->warning((string)__('File "%1" is not a Magento XML file.', $fileName));
+
+                        return;
+                    }
+
                     $xmlFiles = [$path];
                 } else {
                     $xmlFiles = $finder->files()
                         ->name('*.xml')
+                        ->notName(self::EXCLUDED_FILES)
                         ->in($path);
                 }
 

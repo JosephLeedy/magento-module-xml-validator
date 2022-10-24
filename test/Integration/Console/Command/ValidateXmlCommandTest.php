@@ -107,6 +107,8 @@ final class ValidateXmlCommandTest extends TestCase
         $paths = [
             'valid_module_xml' => __DIR__ . '/../../_files/valid/module.xml',
             'invalid_module_xml' => __DIR__ . '/../../_files/invalid/module.xml',
+            'excluded_phpunit_xml' => 'phpunit.xml',
+            'excluded_phpunit_xml_full' => __DIR__ . '/../../_files/invalid/phpunit.xml',
         ];
 
         return [
@@ -180,6 +182,24 @@ final class ValidateXmlCommandTest extends TestCase
 
                 OUTPUT,
                 'expectedReturnCode' => 1
+            ],
+            'non-Magento XML file' => [
+                'commandOptions' => [
+                    'paths' => [
+                        $paths['excluded_phpunit_xml_full']
+                    ]
+                ],
+                'expectedOutput' => <<<OUTPUT
+
+                Imagination Media XML Validator
+                ===============================
+
+                 [WARNING] File "{$paths['excluded_phpunit_xml']}" is not a Magento XML file.
+
+                0 of 0 files are valid
+
+                OUTPUT,
+                'expectedReturnCode' => 0
             ],
         ];
     }
