@@ -145,8 +145,7 @@ final class ValidateXmlCommandTest extends TestCase
 
                  [ERROR] Invalid XML. Errors:
 
-                         Element 'module': This element is not expected.
-                         Line: 4
+                         Line 4: Element 'module': This element is not expected.
 
 
                 0 of 1 file is valid
@@ -174,8 +173,7 @@ final class ValidateXmlCommandTest extends TestCase
 
                  [ERROR] Invalid XML. Errors:
 
-                         Element 'module': This element is not expected.
-                         Line: 4
+                         Line 4: Element 'module': This element is not expected.
 
 
                 1 of 2 files are valid

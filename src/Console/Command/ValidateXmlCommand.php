@@ -174,7 +174,7 @@ class ValidateXmlCommand extends Command
         $symfonyStyle->text((string)__('Validating %1 against %2...', $fileName, $schemaName));
         $symfonyStyle->newLine();
 
-        $errors = Dom::validateDomDocument($domDocument, $schemaLocations[1]);
+        $errors = Dom::validateDomDocument($domDocument, $schemaLocations[1], "Line %line%: %message%\n");
 
         if (count($errors) > 0) {
             array_unshift($errors, (string)__('Invalid XML. Errors:'));
