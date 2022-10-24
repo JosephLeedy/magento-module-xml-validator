@@ -6,6 +6,7 @@
   "license": "OSL-3.0",
   "require": {
     "php": "^7.4 || ^8.0",
+    "ext-dom": "*",
     "ext-libxml": "*",
     "ext-pcre": "*",
     "composer/composer": "^2.2",
