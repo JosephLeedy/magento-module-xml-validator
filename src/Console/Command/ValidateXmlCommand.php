@@ -133,7 +133,9 @@ class ValidateXmlCommand extends Command
                     } catch (Exception $e) {
                         $isValid = false;
 
-                        $symfonyStyle->error((string)__('Could not process %1. Error: %2', $e->getMessage()));
+                        $symfonyStyle->error(
+                            (string)__('Could not process %1. Error: %2', (string)$xmlFile, $e->getMessage())
+                        );
                     }
 
                     if ($isValid) {
