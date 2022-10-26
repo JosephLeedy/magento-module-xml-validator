@@ -102,7 +102,11 @@ class ValidateXmlCommand extends Command
                     $fileName = basename($path);
 
                     if (in_array($fileName, self::EXCLUDED_FILES)) {
-                        $this->symfonyStyle->warning((string)__('File "%1" is not a Magento XML file.', $fileName));
+                        $this->outputWarnings(
+                            [
+                                (string)__('File "%1" is not a Magento XML file.', $fileName)
+                            ]
+                        );
 
                         return;
                     }
@@ -181,7 +185,11 @@ class ValidateXmlCommand extends Command
         preg_match('/xsi:noNamespaceSchemaLocation=\s*"(urn:[^"]+)"/s', $xml, $schemaLocations);
 
         if (count($schemaLocations) === 0) {
-            $this->symfonyStyle->warning((string)__('XML file "%1" does not have a Magento schema defined', $fileName));
+            $this->outputWarnings(
+                [
+                    (string)__('XML file "%1" does not have a Magento schema defined', $fileName)
+                ]
+            );
 
             return false;
         }
@@ -224,5 +232,13 @@ class ValidateXmlCommand extends Command
         array_unshift($errors, (string)__('Invalid XML. Errors:'));
 
         $this->symfonyStyle->error($errors);
+    }
+
+    /**
+     * @param string[] $warnings
+     */
+    private function outputWarnings(array $warnings): void
+    {
+        $this->symfonyStyle->warning($warnings);
     }
 }
