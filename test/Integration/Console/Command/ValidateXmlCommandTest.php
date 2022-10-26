@@ -12,7 +12,6 @@ use Magento\Framework\Phrase\Renderer\Composite;
 use Magento\Framework\Phrase\Renderer\MessageFormatter;
 use Magento\Framework\Phrase\Renderer\Placeholder;
 use Magento\Framework\Phrase\RendererInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\Translate;
 use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
@@ -79,11 +78,22 @@ final class ValidateXmlCommandTest extends TestCase
             ->onlyMethods(['getLocale'])
             ->getMock();
         /** @var RendererInterface $messageFormatter */
-        $messageFormatter = (new ObjectManager($this))->getObject(
+        $messageFormatter = $objectManager->create(
             MessageFormatter::class,
-            ['translate' => $translateMock]
+            [
+                'translate' => $translateMock
+            ]
         );
-        $renderer = new Composite([$messageFormatter, new Placeholder()]);
+        /** @var RendererInterface $renderer */
+        $renderer = $objectManager->create(
+            Composite::class,
+            [
+                'renderers' => [
+                    $messageFormatter,
+                    $objectManager->create(Placeholder::class)
+                ]
+            ]
+        );
 
         $translateMock->method('getLocale')
             ->willReturn('en_US');
