@@ -1,0 +1,8 @@
+"Imagination Media XML Validator","Imagination Media XML Validator"
+"File ""%1"" is not a Magento XML file.","File ""%1"" is not a Magento XML file."
+"Could not process %1. Error: %2","Could not process %1. Error: %2"
+"{valid_files} of {total_files, plural, =1{# file is} other{# files are}} valid","{valid_files} of {total_files, plural, =1{# file is} other{# files are}} valid"
+"XML file ""%1"" does not have a Magento schema defined","XML file ""%1"" does not have a Magento schema defined"
+"Validating %1 against %2...","Validating %1 against %2..."
+"XML is valid.","XML is valid."
+"Invalid XML. Errors:","Invalid XML. Errors:"
