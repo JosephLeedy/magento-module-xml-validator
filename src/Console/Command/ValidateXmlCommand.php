@@ -24,17 +24,20 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\FinderFactory;
 
 use function __;
+use function array_column;
 use function array_map;
 use function array_unshift;
 use function array_walk;
 use function basename;
 use function count;
+use function getenv;
 use function in_array;
 use function libxml_clear_errors;
 use function libxml_get_errors;
 use function libxml_use_internal_errors;
 use function ltrim;
 use function preg_match;
+use function preg_replace;
 use function rtrim;
 use function sprintf;
 use function str_replace;
@@ -57,6 +60,8 @@ class ValidateXmlCommand extends Command
     private DomDocumentFactory $domDocumentFactory;
     private DriverInterface $driver;
     private FinderFactory $finderFactory;
+    private bool $isEnvironmentGitHubActions = false;
+    private OutputInterface $output;
     private SymfonyStyle $symfonyStyle;
 
     public function __construct(
@@ -93,10 +98,12 @@ class ValidateXmlCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $this->isEnvironmentGitHubActions = (bool)getenv('GITHUB_ACTIONS');
+        $this->output = $output;
         $this->symfonyStyle = $this->symfonyStyleFactory->create(
             [
                 'input' => $input,
-                'output' => $output
+                'output' => $this->output
             ]
         );
         $paths = $input->getArgument('paths');
@@ -104,6 +111,10 @@ class ValidateXmlCommand extends Command
         $finder = $this->finderFactory->create();
         $fileCount = 0;
         $validFiles = 0;
+
+        if ($this->isEnvironmentGitHubActions) {
+            $this->output->setVerbosity(OutputInterface::VERBOSITY_QUIET);
+        }
 
         $this->symfonyStyle->title((string)__('Imagination Media XML Validator'));
 
@@ -116,7 +127,11 @@ class ValidateXmlCommand extends Command
                     if (in_array($fileName, self::EXCLUDED_FILES)) {
                         $this->outputWarnings(
                             [
-                                (string)__('File "%1" is not a Magento XML file.', $fileName)
+                                [
+                                    'file' => $fileName,
+                                    'line' => 0,
+                                    'message' => (string)__('File "%1" is not a Magento XML file.', $fileName)
+                                ]
                             ]
                         );
 
@@ -155,7 +170,15 @@ class ValidateXmlCommand extends Command
 
                         $this->outputErrors(
                             [
-                                (string)__('Could not process %1. Error: %2', (string)$xmlFile, $e->getMessage())
+                                [
+                                    'file' => $relativePath,
+                                    'line' => 0,
+                                    'message' => (string)__(
+                                        'Could not process %1. Error: %2',
+                                        (string)$xmlFile,
+                                        $e->getMessage()
+                                    )
+                                ]
                             ]
                         );
                     }
@@ -202,7 +225,11 @@ class ValidateXmlCommand extends Command
         if (count($schemaLocations) === 0) {
             $this->outputWarnings(
                 [
-                    (string)__('XML file "%1" does not have a Magento schema defined', $fileName)
+                    [
+                        'file' => $fileName,
+                        'line' => 0,
+                        'message' => (string)__('XML file "%1" does not have a Magento schema defined', $fileName)
+                    ]
                 ]
             );
 
@@ -211,8 +238,11 @@ class ValidateXmlCommand extends Command
 
         if (count($errors) > 0) {
             $errors = array_map(
-                static fn(LibXMLError $error): string
-                    => sprintf('Line %d: %s', $error->line, rtrim($error->message, "\n")),
+                static fn(LibXMLError $error): array => [
+                    'file' => $fileName,
+                    'line' => $error->line,
+                    'message' => sprintf('Line %d: %s', $error->line, rtrim($error->message, "\n")),
+                ],
                 $errors
             );
 
@@ -229,6 +259,15 @@ class ValidateXmlCommand extends Command
         $errors = Dom::validateDomDocument($domDocument, $schemaLocations[1], "Line %line%: %message%\n");
 
         if (count($errors) > 0) {
+            $errors = array_map(
+                static fn(string $error): array => [
+                    'file' => $fileName,
+                    'line' => (int)preg_replace('/^Line (\d+).+/', '$1', $error),
+                    'message' => $error
+                ],
+                $errors
+            );
+
             $this->outputErrors($errors);
 
             return false;
@@ -240,21 +279,71 @@ class ValidateXmlCommand extends Command
     }
 
     /**
-     * @param string[] $errors
+     * @param array{
+     *     file: string,
+     *     line: int,
+     *     message: string
+     * }[] $errors
      */
     private function outputErrors(array $errors): void
     {
+        if ($this->isEnvironmentGitHubActions) {
+            $this->outputToGitHubActions($errors);
+
+            return;
+        }
+
+        $errors = array_column($errors, 'message');
+
         array_unshift($errors, (string)__('Invalid XML. Errors:'));
 
         $this->symfonyStyle->error($errors);
     }
 
     /**
-     * @param string[] $warnings
+     * @param array{
+     *     file: string,
+     *     line: int,
+     *     message: string
+     * }[] $warnings
      */
     private function outputWarnings(array $warnings): void
     {
+        if ($this->isEnvironmentGitHubActions) {
+            $this->outputToGitHubActions($warnings, 'warning');
+
+            return;
+        }
+
+        $warnings = array_column($warnings, 'message');
+
         $this->symfonyStyle->warning($warnings);
+    }
+
+    /**
+     * @param array{
+     *     file: string,
+     *     line: int,
+     *     message: string
+     * }[] $messages
+     */
+    private function outputToGitHubActions(array $messages, string $level = 'error'): void
+    {
+        array_walk(
+            $messages,
+            function (array $message) use ($level): void {
+                $output = sprintf(
+                    '::%s file=%s,line=%d,col=0::%s',
+                    $level,
+                    $message['file'],
+                    $message['line'],
+                    str_replace("\n", '%0A', preg_replace('/^Line \d+:\s(.+)/', '$1', $message['message']) ?? '')
+                );
+
+                $this->output->write($output, false, OutputInterface::VERBOSITY_QUIET);
+                $this->output->writeln('', OutputInterface::VERBOSITY_QUIET);
+            }
+        );
     }
 
     private function fixTranslationRenderer(): void

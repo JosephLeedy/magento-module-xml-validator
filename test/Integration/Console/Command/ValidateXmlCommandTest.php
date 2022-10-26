@@ -20,6 +20,8 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 use function ltrim;
 use function preg_replace;
+use function putenv;
+use function realpath;
 use function str_replace;
 
 use const BP;
@@ -58,10 +60,10 @@ final class ValidateXmlCommandTest extends TestCase
     }
 
     /**
-     * @dataProvider validatesXmlDataProvider
+     * @dataProvider validatesXmlAndOutputsToConsoleDataProvider
      * @param array{paths: string[]} $commandOptions
      */
-    public function testCommandValidatesXml(
+    public function testCommandValidatesXmlAndOutputsToConsole(
         array $commandOptions,
         string $expectedOutput,
         int $expectedReturnCode
@@ -113,10 +115,45 @@ final class ValidateXmlCommandTest extends TestCase
         self::assertSame($expectedReturnCode, $actualReturnCode);
     }
 
+    public function testCommandValidatesXmlAndOutputsToGitHubActions(): void
+    {
+        /** @var ObjectManagerInterface $objectManager */
+        $objectManager = Bootstrap::getObjectManager();
+        /** @var ValidateXmlCommand $validateXmlCommand */
+        $validateXmlCommand = $objectManager->create(ValidateXmlCommand::class);
+        /** @var CommandTester $commandTester */
+        $commandTester = $objectManager->create(
+            CommandTester::class,
+            [
+                'command' => $validateXmlCommand
+            ]
+        );
+        $commandOptions = [
+            'paths' => [
+                realpath(__DIR__ . '/../../_files/invalid/module.xml') ?: '',
+            ]
+        ];
+
+        putenv('GITHUB_ACTIONS=true');
+
+        $commandTester->execute($commandOptions);
+
+        $expectedOutput = <<<OUTPUT
+        ::error file=app/code/ImaginationMedia/XmlValidator/Test/Integration/_files/invalid/module.xml,line=4,col=0::Element 'module': This element is not expected.%0A
+
+        OUTPUT;
+        $expectedReturnCode = 1;
+        $actualOutput = preg_replace('/\h+$/m', '', $commandTester->getDisplay());
+        $actualReturnCode = $commandTester->getStatusCode();
+
+        self::assertSame($expectedOutput, $actualOutput);
+        self::assertSame($expectedReturnCode, $actualReturnCode);
+    }
+
     /**
      * @return array<string, array<string, array<string, string[]>|string|int>>
      */
-    public function validatesXmlDataProvider(): array
+    public function validatesXmlAndOutputsToConsoleDataProvider(): array
     {
         $paths = [
             'valid_module_xml' => __DIR__ . '/../../_files/valid/module.xml',
