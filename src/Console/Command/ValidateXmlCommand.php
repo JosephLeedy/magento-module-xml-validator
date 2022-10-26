@@ -10,6 +10,9 @@ use LibXMLError;
 use Magento\Framework\Config\Dom;
 use Magento\Framework\DomDocument\DomDocumentFactory;
 use Magento\Framework\Filesystem\DriverInterface;
+use Magento\Framework\Phrase;
+use Magento\Framework\Phrase\Renderer\Composite;
+use Magento\Framework\Phrase\RendererInterface;
 use SplFileInfo;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -45,6 +48,7 @@ class ValidateXmlCommand extends Command
         'phpunit.xml',
     ];
 
+    private RendererInterface $renderer;
     private SymfonyStyleFactory $symfonyStyleFactory;
     private DomDocumentFactory $domDocumentFactory;
     private DriverInterface $driver;
@@ -52,18 +56,22 @@ class ValidateXmlCommand extends Command
     private SymfonyStyle $symfonyStyle;
 
     public function __construct(
+        RendererInterface $renderer,
         SymfonyStyleFactory $symfonyStyleFactory,
         DomDocumentFactory $domDocumentFactory,
         DriverInterface $driver,
         FinderFactory $finderFactory,
         string $name = null
     ) {
+        $this->renderer = $renderer;
         $this->symfonyStyleFactory = $symfonyStyleFactory;
         $this->domDocumentFactory = $domDocumentFactory;
         $this->driver = $driver;
         $this->finderFactory = $finderFactory;
 
         parent::__construct($name);
+
+        $this->fixTranslationRenderer();
     }
 
     protected function configure(): void
@@ -240,5 +248,17 @@ class ValidateXmlCommand extends Command
     private function outputWarnings(array $warnings): void
     {
         $this->symfonyStyle->warning($warnings);
+    }
+
+    private function fixTranslationRenderer(): void
+    {
+        /* Fixes bug where incorrect translation renderer is used for Console commands, causing strings formatted for
+           `MessageFormatter` to not render correctly. */
+
+        if (Phrase::getRenderer() instanceof Composite) {
+            return;
+        }
+
+        Phrase::setRenderer($this->renderer);
     }
 }
