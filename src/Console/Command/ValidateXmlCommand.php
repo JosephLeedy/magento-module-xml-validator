@@ -8,6 +8,7 @@ use DOMDocument;
 use Exception;
 use LibXMLError;
 use Magento\Framework\Config\Dom;
+use Magento\Framework\Config\Dom\UrnResolver;
 use Magento\Framework\DomDocument\DomDocumentFactory;
 use Magento\Framework\Filesystem\DriverInterface;
 use Magento\Framework\Phrase;
@@ -60,6 +61,7 @@ class ValidateXmlCommand extends Command
     private DomDocumentFactory $domDocumentFactory;
     private DriverInterface $driver;
     private FinderFactory $finderFactory;
+    private UrnResolver $urnResolver;
     private bool $isEnvironmentGitHubActions = false;
     private OutputInterface $output;
     private SymfonyStyle $symfonyStyle;
@@ -70,6 +72,7 @@ class ValidateXmlCommand extends Command
         DomDocumentFactory $domDocumentFactory,
         DriverInterface $driver,
         FinderFactory $finderFactory,
+        UrnResolver $urnResolver,
         string $name = null
     ) {
         $this->renderer = $renderer;
@@ -77,6 +80,7 @@ class ValidateXmlCommand extends Command
         $this->domDocumentFactory = $domDocumentFactory;
         $this->driver = $driver;
         $this->finderFactory = $finderFactory;
+        $this->urnResolver = $urnResolver;
 
         parent::__construct($name);
 
@@ -251,9 +255,12 @@ class ValidateXmlCommand extends Command
             return false;
         }
 
-        $schemaName = substr($schemaLocations[1], strrpos($schemaLocations[1], ':' ) + 1);
+        $schemaPath = ltrim(
+            $this->driver->getRelativePath(BP, $this->urnResolver->getRealPath($schemaLocations[1])),
+            '\\/'
+        );
 
-        $this->symfonyStyle->text((string)__('Validating %1 against %2...', $fileName, $schemaName));
+        $this->symfonyStyle->text((string)__('Validating %1 against %2...', $fileName, $schemaPath));
         $this->symfonyStyle->newLine();
 
         $errors = Dom::validateDomDocument($domDocument, $schemaLocations[1], "Line %line%: %message%\n");

@@ -179,7 +179,7 @@ final class ValidateXmlCommandTest extends TestCase
                 Imagination Media XML Validator
                 ===============================
 
-                 Validating {$relativePaths['valid_module_xml']} against Module/etc/module.xsd...
+                 Validating {$relativePaths['valid_module_xml']} against vendor/magento/framework/Module/etc/module.xsd...
 
                  [OK] XML is valid.
 
@@ -199,7 +199,7 @@ final class ValidateXmlCommandTest extends TestCase
                 Imagination Media XML Validator
                 ===============================
 
-                 Validating {$relativePaths['invalid_module_xml']} against Module/etc/module.xsd...
+                 Validating {$relativePaths['invalid_module_xml']} against vendor/magento/framework/Module/etc/module.xsd...
 
                  [ERROR] Invalid XML. Errors:
 
@@ -223,11 +223,11 @@ final class ValidateXmlCommandTest extends TestCase
                 Imagination Media XML Validator
                 ===============================
 
-                 Validating {$relativePaths['valid_module_xml']} against Module/etc/module.xsd...
+                 Validating {$relativePaths['valid_module_xml']} against vendor/magento/framework/Module/etc/module.xsd...
 
                  [OK] XML is valid.
 
-                 Validating {$relativePaths['invalid_module_xml']} against Module/etc/module.xsd...
+                 Validating {$relativePaths['invalid_module_xml']} against vendor/magento/framework/Module/etc/module.xsd...
 
                  [ERROR] Invalid XML. Errors:
 
