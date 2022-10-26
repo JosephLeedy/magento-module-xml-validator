@@ -33,11 +33,15 @@ use function in_array;
 use function libxml_clear_errors;
 use function libxml_get_errors;
 use function libxml_use_internal_errors;
+use function ltrim;
 use function preg_match;
 use function rtrim;
 use function sprintf;
+use function str_replace;
 use function strrpos;
 use function substr;
+
+use const BP;
 
 class ValidateXmlCommand extends Command
 {
@@ -136,12 +140,16 @@ class ValidateXmlCommand extends Command
                 foreach ($xmlFiles as $xmlFile) {
                     if ($xmlFile instanceof SplFileInfo) {
                         $xml = $xmlFile->getContents();
+                        $relativePath = str_replace(BP, '', $xmlFile->getPathname());
                     } else {
                         $xml = $this->driver->fileGetContents($xmlFile);
+                        $relativePath = $this->driver->getRelativePath(BP, $path);
                     }
 
+                    $relativePath = ltrim($relativePath, '\\/');
+
                     try {
-                        $isValid = $this->validateXml($xml, (string)$xmlFile);
+                        $isValid = $this->validateXml($xml, $relativePath);
                     } catch (Exception $e) {
                         $isValid = false;
 

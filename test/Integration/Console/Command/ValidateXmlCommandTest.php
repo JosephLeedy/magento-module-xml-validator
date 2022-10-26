@@ -18,7 +18,11 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Tester\CommandTester;
 
+use function ltrim;
 use function preg_replace;
+use function str_replace;
+
+use const BP;
 
 final class ValidateXmlCommandTest extends TestCase
 {
@@ -120,6 +124,11 @@ final class ValidateXmlCommandTest extends TestCase
             'excluded_phpunit_xml' => 'phpunit.xml',
             'excluded_phpunit_xml_full' => __DIR__ . '/../../_files/invalid/phpunit.xml',
         ];
+        $relativePaths = [];
+
+        foreach ($paths as $name => $path) {
+            $relativePaths[$name] = ltrim(str_replace(BP, '', $path), '\\/');
+        }
 
         return [
             'valid module.xml' => [
@@ -133,7 +142,7 @@ final class ValidateXmlCommandTest extends TestCase
                 Imagination Media XML Validator
                 ===============================
 
-                 Validating {$paths['valid_module_xml']} against Module/etc/module.xsd...
+                 Validating {$relativePaths['valid_module_xml']} against Module/etc/module.xsd...
 
                  [OK] XML is valid.
 
@@ -153,7 +162,7 @@ final class ValidateXmlCommandTest extends TestCase
                 Imagination Media XML Validator
                 ===============================
 
-                 Validating {$paths['invalid_module_xml']} against Module/etc/module.xsd...
+                 Validating {$relativePaths['invalid_module_xml']} against Module/etc/module.xsd...
 
                  [ERROR] Invalid XML. Errors:
 
@@ -177,11 +186,11 @@ final class ValidateXmlCommandTest extends TestCase
                 Imagination Media XML Validator
                 ===============================
 
-                 Validating {$paths['valid_module_xml']} against Module/etc/module.xsd...
+                 Validating {$relativePaths['valid_module_xml']} against Module/etc/module.xsd...
 
                  [OK] XML is valid.
 
-                 Validating {$paths['invalid_module_xml']} against Module/etc/module.xsd...
+                 Validating {$relativePaths['invalid_module_xml']} against Module/etc/module.xsd...
 
                  [ERROR] Invalid XML. Errors:
 
