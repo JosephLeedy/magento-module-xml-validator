@@ -177,7 +177,6 @@ class ValidateXmlCommand extends Command
             )
         );
 
-
         return $validFiles === $fileCount ? 0 : 1;
     }
 
