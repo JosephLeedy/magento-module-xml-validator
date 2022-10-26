@@ -143,7 +143,7 @@ class ValidateXmlCommand extends Command
                         $relativePath = str_replace(BP, '', $xmlFile->getPathname());
                     } else {
                         $xml = $this->driver->fileGetContents($xmlFile);
-                        $relativePath = $this->driver->getRelativePath(BP, $path);
+                        $relativePath = $this->driver->getRelativePath(BP, $path); /* @phpstan-ignore-line */
                     }
 
                     $relativePath = ltrim($relativePath, '\\/');
