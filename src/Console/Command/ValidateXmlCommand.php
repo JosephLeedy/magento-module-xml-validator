@@ -49,6 +49,7 @@ class ValidateXmlCommand extends Command
     private DomDocumentFactory $domDocumentFactory;
     private DriverInterface $driver;
     private FinderFactory $finderFactory;
+    private SymfonyStyle $symfonyStyle;
 
     public function __construct(
         SymfonyStyleFactory $symfonyStyleFactory,
@@ -80,8 +81,7 @@ class ValidateXmlCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        /** @var SymfonyStyle $symfonyStyle */
-        $symfonyStyle = $this->symfonyStyleFactory->create(
+        $this->symfonyStyle = $this->symfonyStyleFactory->create(
             [
                 'input' => $input,
                 'output' => $output
@@ -93,16 +93,16 @@ class ValidateXmlCommand extends Command
         $fileCount = 0;
         $validFiles = 0;
 
-        $symfonyStyle->title((string)__('Imagination Media XML Validator'));
+        $this->symfonyStyle->title((string)__('Imagination Media XML Validator'));
 
         array_walk(
             $paths,
-            function (string $path) use ($symfonyStyle, $finder, &$fileCount, &$validFiles): void {
+            function (string $path) use ($finder, &$fileCount, &$validFiles): void {
                 if ($this->driver->isFile($path)) {
                     $fileName = basename($path);
 
                     if (in_array($fileName, self::EXCLUDED_FILES)) {
-                        $symfonyStyle->warning((string)__('File "%1" is not a Magento XML file.', $fileName));
+                        $this->symfonyStyle->warning((string)__('File "%1" is not a Magento XML file.', $fileName));
 
                         return;
                     }
@@ -129,11 +129,11 @@ class ValidateXmlCommand extends Command
                     }
 
                     try {
-                        $isValid = $this->validateXml($xml, (string)$xmlFile, $symfonyStyle);
+                        $isValid = $this->validateXml($xml, (string)$xmlFile);
                     } catch (Exception $e) {
                         $isValid = false;
 
-                        $symfonyStyle->error(
+                        $this->symfonyStyle->error(
                             (string)__('Could not process %1. Error: %2', (string)$xmlFile, $e->getMessage())
                         );
                     }
@@ -145,7 +145,7 @@ class ValidateXmlCommand extends Command
             }
         );
 
-        $symfonyStyle->writeln(
+        $this->symfonyStyle->writeln(
             (string)__(
                 '{valid_files} of {total_files, plural, =1{# file is} other{# files are}} valid',
                 [
@@ -162,7 +162,7 @@ class ValidateXmlCommand extends Command
     /**
      * @throws Exception
      */
-    private function validateXml(string $xml, string $fileName, SymfonyStyle $symfonyStyle): bool
+    private function validateXml(string $xml, string $fileName): bool
     {
         /** @var DOMDocument $domDocument */
         $domDocument = $this->domDocumentFactory->create();
@@ -179,7 +179,7 @@ class ValidateXmlCommand extends Command
         preg_match('/xsi:noNamespaceSchemaLocation=\s*"(urn:[^"]+)"/s', $xml, $schemaLocations);
 
         if (count($schemaLocations) === 0) {
-            $symfonyStyle->warning((string)__('XML file "%1" does not have a Magento schema defined', $fileName));
+            $this->symfonyStyle->warning((string)__('XML file "%1" does not have a Magento schema defined', $fileName));
 
             return false;
         }
@@ -191,25 +191,25 @@ class ValidateXmlCommand extends Command
                 $errors
             );
 
-            $this->outputErrorsToConsole($errors, $symfonyStyle);
+            $this->outputErrorsToConsole($errors);
 
             return false;
         }
 
         $schemaName = substr($schemaLocations[1], strrpos($schemaLocations[1], ':' ) + 1);
 
-        $symfonyStyle->text((string)__('Validating %1 against %2...', $fileName, $schemaName));
-        $symfonyStyle->newLine();
+        $this->symfonyStyle->text((string)__('Validating %1 against %2...', $fileName, $schemaName));
+        $this->symfonyStyle->newLine();
 
         $errors = Dom::validateDomDocument($domDocument, $schemaLocations[1], "Line %line%: %message%\n");
 
         if (count($errors) > 0) {
-            $this->outputErrorsToConsole($errors, $symfonyStyle);
+            $this->outputErrorsToConsole($errors);
 
             return false;
         }
 
-        $symfonyStyle->success((string)__('XML is valid.'));
+        $this->symfonyStyle->success((string)__('XML is valid.'));
 
         return true;
     }
@@ -217,10 +217,10 @@ class ValidateXmlCommand extends Command
     /**
      * @param string[] $errors
      */
-    private function outputErrorsToConsole(array $errors, SymfonyStyle $symfonyStyle): void
+    private function outputErrorsToConsole(array $errors): void
     {
         array_unshift($errors, (string)__('Invalid XML. Errors:'));
 
-        $symfonyStyle->error($errors);
+        $this->symfonyStyle->error($errors);
     }
 }
