@@ -191,7 +191,7 @@ class ValidateXmlCommand extends Command
                 $errors
             );
 
-            $this->outputErrorsToConsole($errors);
+            $this->outputErrors($errors);
 
             return false;
         }
@@ -204,7 +204,7 @@ class ValidateXmlCommand extends Command
         $errors = Dom::validateDomDocument($domDocument, $schemaLocations[1], "Line %line%: %message%\n");
 
         if (count($errors) > 0) {
-            $this->outputErrorsToConsole($errors);
+            $this->outputErrors($errors);
 
             return false;
         }
@@ -217,7 +217,7 @@ class ValidateXmlCommand extends Command
     /**
      * @param string[] $errors
      */
-    private function outputErrorsToConsole(array $errors): void
+    private function outputErrors(array $errors): void
     {
         array_unshift($errors, (string)__('Invalid XML. Errors:'));
 
