@@ -42,8 +42,6 @@ use function preg_replace;
 use function rtrim;
 use function sprintf;
 use function str_replace;
-use function strrpos;
-use function substr;
 
 use const BP;
 
