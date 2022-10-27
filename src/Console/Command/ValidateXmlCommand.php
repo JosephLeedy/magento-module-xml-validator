@@ -10,7 +10,7 @@ use LibXMLError;
 use Magento\Framework\Config\Dom;
 use Magento\Framework\Config\Dom\UrnResolver;
 use Magento\Framework\DomDocument\DomDocumentFactory;
-use Magento\Framework\Filesystem\DriverInterface;
+use Magento\Framework\Filesystem\Driver\File;
 use Magento\Framework\Phrase;
 use Magento\Framework\Phrase\Renderer\Composite;
 use Magento\Framework\Phrase\RendererInterface;
@@ -57,7 +57,7 @@ class ValidateXmlCommand extends Command
     private RendererInterface $renderer;
     private SymfonyStyleFactory $symfonyStyleFactory;
     private DomDocumentFactory $domDocumentFactory;
-    private DriverInterface $driver;
+    private File $driver;
     private FinderFactory $finderFactory;
     private UrnResolver $urnResolver;
     private bool $isEnvironmentGitHubActions = false;
@@ -68,7 +68,7 @@ class ValidateXmlCommand extends Command
         RendererInterface $renderer,
         SymfonyStyleFactory $symfonyStyleFactory,
         DomDocumentFactory $domDocumentFactory,
-        DriverInterface $driver,
+        File $driver,
         FinderFactory $finderFactory,
         UrnResolver $urnResolver,
         string $name = null
