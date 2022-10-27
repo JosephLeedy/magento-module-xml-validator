@@ -1,0 +1,12 @@
+parameters:
+	level: 8
+	fileExtensions:
+		- php
+	paths:
+		- src
+		- test
+	treatPhpDocTypesAsCertain: false
+	reportUnmatchedIgnoredErrors: false
+	ignoreErrors:
+		- '#Call to static method getObjectManager\(\) on an unknown class Magento\\TestFramework\\Helper\\Bootstrap#'
+		- '#constant BP not found\.#i'
