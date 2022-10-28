@@ -23,6 +23,7 @@ jobs:
           tools: composer, cs2pr
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMPOSER_AUTH_JSON: ${{ secrets.COMPOSER_AUTH_JSON }}
 
       - name: Get Composer cache directory
         id: composer-cache
