@@ -157,7 +157,7 @@ as inspiration.
 
 ## Style Guides
 ### Commit Messages
-Please use clear and concise messages in the imperitive form that are between 50
+Please use clear and concise messages in the imperative form that are between 50
 and 55 characters in length. Additional details may be included in subsequent
 description lines (proceeded by a blank line for the first line) if needed.
 Please see [How to Write a Commit Message by Chris Beams] for more specific
