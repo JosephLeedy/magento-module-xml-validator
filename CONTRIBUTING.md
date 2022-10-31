@@ -148,9 +148,9 @@ see instead** and why. At this point, you can also tell us which alternatives do
 not work for you.
 - You may want to **include screenshots and animated GIFs** which help you
 demonstrate the steps or point out the part which the suggestion is related to.
-You can use [LICEcap](https://www.cockos.com/licecap/) to record GIFs on macOS
-and Windows and [Silentcast] on Linux. Alternatively, [Loom] is a paid screen
-recording app available for macOS, Windows and other platforms.
+You can use [LICEcap] to record GIFs on macOS and Windows and [Silentcast] on
+Linux. Alternatively, [Loom] is a paid screen recording app available for macOS,
+Windows and other platforms.
 - **Explain why this enhancement would be useful** to most users. You may also
 want to point out the other projects that solved it better and which could serve
 as inspiration.
