@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="ImaginationMedia\XmlValidator\Console\Command\ValidateXmlCommand">
+        <arguments>
+            <argument name="renderer" xsi:type="object">CompositeRenderer</argument>
+        </arguments>
+    </type>
+    <type name="Magento\Framework\Console\CommandListInterface">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="imaginationmedia_xmlvalidator_validate_xml_command" xsi:type="object">ImaginationMedia\XmlValidator\Console\Command\ValidateXmlCommand</item>
+            </argument>
+        </arguments>
+    </type>
+    <virtualType name="CompositeRenderer" type="Magento\Framework\Phrase\Renderer\Composite">
+        <arguments>
+            <argument name="renderers" xsi:type="array">
+                <item name="messageformatter" xsi:type="object">Magento\Framework\Phrase\Renderer\MessageFormatter</item>
+                <item name="placeholder" xsi:type="object">Magento\Framework\Phrase\Renderer\Placeholder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+</config>
