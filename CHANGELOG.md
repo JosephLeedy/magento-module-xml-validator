@@ -11,4 +11,9 @@ For more information about the extension, please refer to the
 
 ## [Unreleased]
 
-[Unreleased]: https://github.com/Imagination-Media/magento-module-xml-validator/compare/main...develop
+## [0.1.0] — 2022-10-31
+### Added
+- Created initial rough MVP of tool with support for CLI and GitHub Actions
+
+[Unreleased]: https://github.com/Imagination-Media/magento-module-xml-validator/compare/0.1.0...develop
+[0.1.0]: https://github.com/Imagination-Media/magento-module-xml-validator/releases/tag/0.1.0
