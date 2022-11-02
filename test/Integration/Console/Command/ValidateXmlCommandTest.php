@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace ImaginationMedia\XmlValidator\Test\Integration\Console\Command;
 
 use ImaginationMedia\XmlValidator\Console\Command\ValidateXmlCommand;
+use Magento\Framework\Config\Dom\UrnResolver;
 use Magento\Framework\Console\CommandListInterface;
+use Magento\Framework\DomDocument\DomDocumentFactory;
+use Magento\Framework\Filesystem\Driver\File;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Phrase;
 use Magento\Framework\Phrase\Renderer\Composite;
@@ -13,6 +16,7 @@ use Magento\Framework\Phrase\Renderer\MessageFormatter;
 use Magento\Framework\Phrase\Renderer\Placeholder;
 use Magento\Framework\Phrase\RendererInterface;
 use Magento\Framework\Translate;
+use Magento\Setup\Model\ObjectManagerProvider;
 use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Input\InputArgument;
@@ -28,11 +32,12 @@ use const BP;
 
 final class ValidateXmlCommandTest extends TestCase
 {
+    private ObjectManagerInterface $objectManager;
+    private ValidateXmlCommand $validateXmlCommand;
+
     public function testCommandIsRegistered(): void
     {
-        /** @var ObjectManagerInterface $objectManager */
-        $objectManager = Bootstrap::getObjectManager();
-        $commands = $objectManager->get(CommandListInterface::class)->getCommands();
+        $commands = $this->objectManager->get(CommandListInterface::class)->getCommands();
 
         self::assertArrayHasKey('imaginationmedia_xmlvalidator_validate_xml_command', $commands);
         self::assertInstanceOf(
@@ -43,9 +48,6 @@ final class ValidateXmlCommandTest extends TestCase
 
     public function testCommandIsConfigured(): void
     {
-        /** @var ObjectManagerInterface $objectManager */
-        $objectManager = Bootstrap::getObjectManager();
-        $validateXmlCommand = $objectManager->create(ValidateXmlCommand::class);
         $expectedArguments = [
             'paths' => new InputArgument(
                 'paths',
@@ -54,9 +56,12 @@ final class ValidateXmlCommandTest extends TestCase
             )
         ];
 
-        self::assertSame(ValidateXmlCommand::COMMAND_NAME, $validateXmlCommand->getName());
-        self::assertSame('Validates an XML file against its configured schema', $validateXmlCommand->getDescription());
-        self::assertEquals($expectedArguments, $validateXmlCommand->getDefinition()->getArguments());
+        self::assertSame(ValidateXmlCommand::COMMAND_NAME, $this->validateXmlCommand->getName());
+        self::assertSame(
+            'Validates an XML file against its configured schema',
+            $this->validateXmlCommand->getDescription()
+        );
+        self::assertEquals($expectedArguments, $this->validateXmlCommand->getDefinition()->getArguments());
     }
 
     /**
@@ -68,43 +73,14 @@ final class ValidateXmlCommandTest extends TestCase
         string $expectedOutput,
         int $expectedReturnCode
     ): void {
-        /** @var ObjectManagerInterface $objectManager */
-        $objectManager = Bootstrap::getObjectManager();
-        /** @var ValidateXmlCommand $validateXmlCommand */
-        $validateXmlCommand = $objectManager->create(ValidateXmlCommand::class);
+        $this->validateXmlCommand = $this->objectManager->create(ValidateXmlCommand::class);
         /** @var CommandTester $commandTester */
-        $commandTester = $objectManager->create(
+        $commandTester = $this->objectManager->create(
             CommandTester::class,
             [
-                'command' => $validateXmlCommand
+                'command' => $this->validateXmlCommand
             ]
         );
-        $translateMock = $this->getMockBuilder(Translate::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['getLocale'])
-            ->getMock();
-        /** @var RendererInterface $messageFormatter */
-        $messageFormatter = $objectManager->create(
-            MessageFormatter::class,
-            [
-                'translate' => $translateMock
-            ]
-        );
-        /** @var RendererInterface $renderer */
-        $renderer = $objectManager->create(
-            Composite::class,
-            [
-                'renderers' => [
-                    $messageFormatter,
-                    $objectManager->create(Placeholder::class)
-                ]
-            ]
-        );
-
-        $translateMock->method('getLocale')
-            ->willReturn('en_US');
-
-        Phrase::setRenderer($renderer);
 
         $commandTester->execute($commandOptions);
 
@@ -117,15 +93,11 @@ final class ValidateXmlCommandTest extends TestCase
 
     public function testCommandValidatesXmlAndOutputsToGitHubActions(): void
     {
-        /** @var ObjectManagerInterface $objectManager */
-        $objectManager = Bootstrap::getObjectManager();
-        /** @var ValidateXmlCommand $validateXmlCommand */
-        $validateXmlCommand = $objectManager->create(ValidateXmlCommand::class);
         /** @var CommandTester $commandTester */
-        $commandTester = $objectManager->create(
+        $commandTester = $this->objectManager->create(
             CommandTester::class,
             [
-                'command' => $validateXmlCommand
+                'command' => $this->validateXmlCommand
             ]
         );
         $commandOptions = [
@@ -258,5 +230,90 @@ final class ValidateXmlCommandTest extends TestCase
                 'expectedReturnCode' => 0
             ],
         ];
+    }
+
+    protected function setUp(): void
+    {
+        $this->objectManager = Bootstrap::getObjectManager();
+        $objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        $objectManagerProviderMock = $this->createMock(ObjectManagerProvider::class);
+
+        $objectManagerMock->method('create')
+            ->willReturnMap(
+                [
+                    [
+                        DomDocumentFactory::class,
+                        [],
+                        new DomDocumentFactory()
+                    ],
+                    [
+                        File::class,
+                        [],
+                        new File()
+                    ],
+                    [
+                        UrnResolver::class,
+                        [],
+                        new UrnResolver()
+                    ]
+                ]
+            );
+
+        $objectManagerProviderMock
+            ->method('get')
+            ->willReturn($objectManagerMock);
+
+        $this->objectManager->configure(
+            [
+                ObjectManagerProvider::class => [
+                    'shared' => true
+                ],
+            ]
+        );
+        $this->objectManager->addSharedInstance($objectManagerProviderMock, ObjectManagerProvider::class);
+
+        $this->fixTranslationRenderer();
+
+        $this->validateXmlCommand = $this->objectManager->create(
+            ValidateXmlCommand::class,
+            [
+                'objectManagerProvider' => $objectManagerProviderMock
+            ]
+        );
+    }
+
+    protected function tearDown(): void
+    {
+        unset($this->objectManager, $this->validateXmlCommand);
+    }
+
+    private function fixTranslationRenderer(): void
+    {
+        $translateMock = $this->getMockBuilder(Translate::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getLocale'])
+            ->getMock();
+        /** @var RendererInterface $messageFormatter */
+        $messageFormatter = $this->objectManager->create(
+            MessageFormatter::class,
+            [
+                'translate' => $translateMock
+            ]
+        );
+        /** @var RendererInterface $renderer */
+        $renderer = $this->objectManager->create(
+            Composite::class,
+            [
+                'renderers' => [
+                    $messageFormatter,
+                    $this->objectManager->create(Placeholder::class)
+                ]
+            ]
+        );
+
+        $translateMock->method('getLocale')
+            ->willReturn('en_US');
+
+        Phrase::setRenderer($renderer);
     }
 }

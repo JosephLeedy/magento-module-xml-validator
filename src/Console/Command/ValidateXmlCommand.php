@@ -11,18 +11,19 @@ use Magento\Framework\Config\Dom;
 use Magento\Framework\Config\Dom\UrnResolver;
 use Magento\Framework\DomDocument\DomDocumentFactory;
 use Magento\Framework\Filesystem\Driver\File;
+use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Phrase;
 use Magento\Framework\Phrase\Renderer\Composite;
-use Magento\Framework\Phrase\RendererInterface;
+use Magento\Framework\Phrase\Renderer\MessageFormatter;
+use Magento\Framework\Phrase\Renderer\Placeholder;
+use Magento\Setup\Model\ObjectManagerProvider;
 use SplFileInfo;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Console\Style\SymfonyStyleFactory;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Finder\FinderFactory;
 
 use function __;
 use function array_column;
@@ -54,31 +55,22 @@ class ValidateXmlCommand extends Command
         'phpunit.xml',
     ];
 
-    private RendererInterface $renderer;
-    private SymfonyStyleFactory $symfonyStyleFactory;
+    private ObjectManagerInterface $objectManager;
     private DomDocumentFactory $domDocumentFactory;
     private File $driver;
-    private FinderFactory $finderFactory;
     private UrnResolver $urnResolver;
     private bool $isEnvironmentGitHubActions = false;
     private OutputInterface $output;
     private SymfonyStyle $symfonyStyle;
 
     public function __construct(
-        RendererInterface $renderer,
-        SymfonyStyleFactory $symfonyStyleFactory,
-        DomDocumentFactory $domDocumentFactory,
-        File $driver,
-        FinderFactory $finderFactory,
-        UrnResolver $urnResolver,
+        ObjectManagerProvider $objectManagerProvider,
         string $name = null
     ) {
-        $this->renderer = $renderer;
-        $this->symfonyStyleFactory = $symfonyStyleFactory;
-        $this->domDocumentFactory = $domDocumentFactory;
-        $this->driver = $driver;
-        $this->finderFactory = $finderFactory;
-        $this->urnResolver = $urnResolver;
+        $this->objectManager = $objectManagerProvider->get();
+        $this->domDocumentFactory = $this->objectManager->create(DomDocumentFactory::class);
+        $this->driver = $this->objectManager->create(File::class);
+        $this->urnResolver = $this->objectManager->create(UrnResolver::class);
 
         parent::__construct($name);
 
@@ -102,15 +94,10 @@ class ValidateXmlCommand extends Command
     {
         $this->isEnvironmentGitHubActions = (bool)getenv('GITHUB_ACTIONS');
         $this->output = $output;
-        $this->symfonyStyle = $this->symfonyStyleFactory->create(
-            [
-                'input' => $input,
-                'output' => $this->output
-            ]
-        );
+        $this->symfonyStyle = new SymfonyStyle($input, $this->output);
         $paths = $input->getArgument('paths');
         /** @var Finder $finder */
-        $finder = $this->finderFactory->create();
+        $finder = $this->objectManager->create(Finder::class);
         $fileCount = 0;
         $validFiles = 0;
 
@@ -360,6 +347,13 @@ class ValidateXmlCommand extends Command
             return;
         }
 
-        Phrase::setRenderer($this->renderer);
+        $renderer = new Composite(
+            [
+                $this->objectManager->create(MessageFormatter::class),
+                $this->objectManager->create(Placeholder::class)
+            ]
+        );
+
+        Phrase::setRenderer($renderer);
     }
 }

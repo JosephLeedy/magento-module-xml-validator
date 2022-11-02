@@ -23,6 +23,15 @@ entering the following commands into your terminal or command prompt:
     cd /path/to/your/store
     composer require imaginationmedia/module-xml-validator
 
+### Post-Installation
+
+After installation of the extension, you **must** run the following command to
+patch your `setup/src/Magento/Setup/Console/CommandList.php` file. This will
+allow the tool to run with only the core Magento files installed and no
+database.
+
+    patch -p1 < vendor/imaginationmedia/module-xml-validator/patches/Add-validate-XML-command-to-Setup-Command-List.patch
+
 ## Updating
 
 To update the XML Validator extension using Composer, run these commands from

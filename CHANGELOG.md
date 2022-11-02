@@ -10,6 +10,9 @@ For more information about the extension, please refer to the
 [README](./README.md) document.
 
 ## [Unreleased]
+### Changed
+- Refactored loading of dependencies to allow the command to be run with only
+the Magento files installed and no database (useful in CI/CD environments)
 
 ## [0.1.0] — 2022-10-31
 ### Added
