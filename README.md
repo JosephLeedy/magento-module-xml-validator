@@ -21,7 +21,7 @@ The XML Validator extension is available for installation via Composer by
 entering the following commands into your terminal or command prompt:
 
     cd /path/to/your/store
-    composer require imaginationmedia/module-xml-validator
+    composer require --dev imaginationmedia/module-xml-validator
 
 ### Post-Installation
 
