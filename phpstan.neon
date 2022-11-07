@@ -10,3 +10,6 @@ parameters:
 	ignoreErrors:
 		- '#Call to static method getObjectManager\(\) on an unknown class Magento\\TestFramework\\Helper\\Bootstrap#'
 		- '#constant BP not found\.#i'
+		- '#^Class Magento\\Setup\\Model\\ObjectManagerProvider not found\.$#'
+		- '#^Call to method [^(]+\(\) on an unknown class Magento\\Setup\\Model\\ObjectManagerProvider\.$#'
+		- '#^Parameter \$objectManagerProvider of method [^(]+\(\) has invalid type Magento\\Setup\\Model\\ObjectManagerProvider\.$#'
