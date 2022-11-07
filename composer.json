@@ -2,7 +2,7 @@
   "name": "imaginationmedia/module-xml-validator",
   "description": "Adds a console command for validating XML files against their configured schema",
   "type": "magento2-module",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "license": "OSL-3.0",
   "require": {
     "php": "^7.4 || ^8.0",
