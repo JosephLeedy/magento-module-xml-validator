@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace ImaginationMedia\XmlValidator\Test\Integration\Console\Command;
 
 use ImaginationMedia\XmlValidator\Console\Command\ValidateXmlCommand;
+use ImaginationMedia\XmlValidator\Test\Integration\_stubs\Setup\Console\CommandList;
 use Magento\Framework\Config\Dom\UrnResolver;
-use Magento\Framework\Console\CommandListInterface;
 use Magento\Framework\DomDocument\DomDocumentFactory;
 use Magento\Framework\Filesystem\Driver\File;
 use Magento\Framework\ObjectManagerInterface;
@@ -37,13 +37,9 @@ final class ValidateXmlCommandTest extends TestCase
 
     public function testCommandIsRegistered(): void
     {
-        $commands = $this->objectManager->get(CommandListInterface::class)->getCommands();
+        $commands = $this->objectManager->get(CommandList::class)->getCommands();
 
-        self::assertArrayHasKey('imaginationmedia_xmlvalidator_validate_xml_command', $commands);
-        self::assertInstanceOf(
-            ValidateXmlCommand::class,
-            $commands['imaginationmedia_xmlvalidator_validate_xml_command']
-        );
+        self::assertContains(ValidateXmlCommand::class, $commands);
     }
 
     public function testCommandIsConfigured(): void
