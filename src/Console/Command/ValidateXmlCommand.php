@@ -222,7 +222,7 @@ class ValidateXmlCommand extends Command
                 ]
             );
 
-            return false;
+            return true;
         }
 
         if (count($errors) > 0) {

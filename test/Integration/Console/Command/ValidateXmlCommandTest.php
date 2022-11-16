@@ -125,6 +125,7 @@ final class ValidateXmlCommandTest extends TestCase
     {
         $paths = [
             'valid_module_xml' => __DIR__ . '/../../_files/valid/module.xml',
+            'valid_config_xml' => __DIR__ . '/../../_files/valid/config.xml',
             'invalid_module_xml' => __DIR__ . '/../../_files/invalid/module.xml',
             'excluded_phpunit_xml' => 'phpunit.xml',
             'excluded_phpunit_xml_full' => __DIR__ . '/../../_files/invalid/phpunit.xml',
@@ -206,6 +207,26 @@ final class ValidateXmlCommandTest extends TestCase
 
                 OUTPUT,
                 'expectedReturnCode' => 1
+            ],
+            'missing Magento schema declaration in config.xml' => [
+                'commandOptions' => [
+                    'paths' => [
+                        $paths['valid_config_xml']
+                    ]
+                ],
+                'expectedOutput' => <<<OUTPUT
+
+                Imagination Media XML Validator
+                ===============================
+
+                 [WARNING] XML file
+                           "{$relativePaths['valid_config_xml']}" does
+                           not have a Magento schema defined
+
+                1 of 1 file is valid
+
+                OUTPUT,
+                'expectedReturnCode' => 0
             ],
             'non-Magento XML file' => [
                 'commandOptions' => [

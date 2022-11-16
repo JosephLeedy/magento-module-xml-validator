@@ -10,6 +10,9 @@ For more information about the extension, please refer to the
 [README](./README.md) document.
 
 ## [Unreleased]
+### Fixed
+- Warnings for missing Magento schema declarations are no longer returned as
+errors
 
 ## [0.2.0] — 2022-11-07
 ### Changed
