@@ -144,6 +144,7 @@ final class ValidateXmlCommandTest extends TestCase
                     ]
                 ],
                 'expectedOutput' => <<<OUTPUT
+                #StandWithUkraine
 
                 Imagination Media XML Validator
                 ===============================
@@ -164,6 +165,7 @@ final class ValidateXmlCommandTest extends TestCase
                     ]
                 ],
                 'expectedOutput' => <<<OUTPUT
+                #StandWithUkraine
 
                 Imagination Media XML Validator
                 ===============================
@@ -188,6 +190,7 @@ final class ValidateXmlCommandTest extends TestCase
                     ]
                 ],
                 'expectedOutput' => <<<OUTPUT
+                #StandWithUkraine
 
                 Imagination Media XML Validator
                 ===============================
@@ -215,6 +218,7 @@ final class ValidateXmlCommandTest extends TestCase
                     ]
                 ],
                 'expectedOutput' => <<<OUTPUT
+                #StandWithUkraine
 
                 Imagination Media XML Validator
                 ===============================
@@ -235,6 +239,7 @@ final class ValidateXmlCommandTest extends TestCase
                     ]
                 ],
                 'expectedOutput' => <<<OUTPUT
+                #StandWithUkraine
 
                 Imagination Media XML Validator
                 ===============================
