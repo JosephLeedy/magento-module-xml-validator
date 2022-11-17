@@ -5,6 +5,9 @@ parameters:
 	paths:
 		- src
 		- test
+	excludePaths:
+		analyse:
+			- test/*/_stubs/*
 	treatPhpDocTypesAsCertain: false
 	reportUnmatchedIgnoredErrors: false
 	ignoreErrors:

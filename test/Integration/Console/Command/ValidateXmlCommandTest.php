@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace ImaginationMedia\XmlValidator\Test\Integration\Console\Command;
 
 use ImaginationMedia\XmlValidator\Console\Command\ValidateXmlCommand;
+use ImaginationMedia\XmlValidator\Test\Integration\_stubs\Setup\Console\CommandList;
 use Magento\Framework\Config\Dom\UrnResolver;
-use Magento\Framework\Console\CommandListInterface;
 use Magento\Framework\DomDocument\DomDocumentFactory;
 use Magento\Framework\Filesystem\Driver\File;
 use Magento\Framework\ObjectManagerInterface;
@@ -37,13 +37,9 @@ final class ValidateXmlCommandTest extends TestCase
 
     public function testCommandIsRegistered(): void
     {
-        $commands = $this->objectManager->get(CommandListInterface::class)->getCommands();
+        $commands = $this->objectManager->get(CommandList::class)->getCommands();
 
-        self::assertArrayHasKey('imaginationmedia_xmlvalidator_validate_xml_command', $commands);
-        self::assertInstanceOf(
-            ValidateXmlCommand::class,
-            $commands['imaginationmedia_xmlvalidator_validate_xml_command']
-        );
+        self::assertContains(ValidateXmlCommand::class, $commands);
     }
 
     public function testCommandIsConfigured(): void
@@ -129,6 +125,7 @@ final class ValidateXmlCommandTest extends TestCase
     {
         $paths = [
             'valid_module_xml' => __DIR__ . '/../../_files/valid/module.xml',
+            'valid_config_xml' => __DIR__ . '/../../_files/valid/config.xml',
             'invalid_module_xml' => __DIR__ . '/../../_files/invalid/module.xml',
             'excluded_phpunit_xml' => 'phpunit.xml',
             'excluded_phpunit_xml_full' => __DIR__ . '/../../_files/invalid/phpunit.xml',
@@ -147,6 +144,7 @@ final class ValidateXmlCommandTest extends TestCase
                     ]
                 ],
                 'expectedOutput' => <<<OUTPUT
+                #StandWithUkraine
 
                 Imagination Media XML Validator
                 ===============================
@@ -167,6 +165,7 @@ final class ValidateXmlCommandTest extends TestCase
                     ]
                 ],
                 'expectedOutput' => <<<OUTPUT
+                #StandWithUkraine
 
                 Imagination Media XML Validator
                 ===============================
@@ -191,6 +190,7 @@ final class ValidateXmlCommandTest extends TestCase
                     ]
                 ],
                 'expectedOutput' => <<<OUTPUT
+                #StandWithUkraine
 
                 Imagination Media XML Validator
                 ===============================
@@ -211,6 +211,27 @@ final class ValidateXmlCommandTest extends TestCase
                 OUTPUT,
                 'expectedReturnCode' => 1
             ],
+            'missing Magento schema declaration in config.xml' => [
+                'commandOptions' => [
+                    'paths' => [
+                        $paths['valid_config_xml']
+                    ]
+                ],
+                'expectedOutput' => <<<OUTPUT
+                #StandWithUkraine
+
+                Imagination Media XML Validator
+                ===============================
+
+                 [WARNING] XML file
+                           "{$relativePaths['valid_config_xml']}" does
+                           not have a Magento schema defined
+
+                1 of 1 file is valid
+
+                OUTPUT,
+                'expectedReturnCode' => 0
+            ],
             'non-Magento XML file' => [
                 'commandOptions' => [
                     'paths' => [
@@ -218,6 +239,7 @@ final class ValidateXmlCommandTest extends TestCase
                     ]
                 ],
                 'expectedOutput' => <<<OUTPUT
+                #StandWithUkraine
 
                 Imagination Media XML Validator
                 ===============================

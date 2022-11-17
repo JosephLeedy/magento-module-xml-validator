@@ -105,6 +105,8 @@ class ValidateXmlCommand extends Command
             $this->output->setVerbosity(OutputInterface::VERBOSITY_QUIET);
         }
 
+        $this->output->writeln('<fg=yellow;bg=blue>#StandWith</><fg=blue;bg=yellow>Ukraine</>');
+
         $this->symfonyStyle->title((string)__('Imagination Media XML Validator'));
 
         array_walk(
@@ -222,7 +224,7 @@ class ValidateXmlCommand extends Command
                 ]
             );
 
-            return false;
+            return true;
         }
 
         if (count($errors) > 0) {
