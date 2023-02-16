@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <config>
     <default>
-        <imaginationmedia_xml_validator>
+        <joseph_leedy_xml_validator>
             <general>
                 <active>1</active>
             </general>
-        </imaginationmedia_xml_validator>
+        </joseph_leedy_xml_validator>
     </default>
 </config>

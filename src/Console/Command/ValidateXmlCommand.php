@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ImaginationMedia\XmlValidator\Console\Command;
+namespace JosephLeedy\XmlValidator\Console\Command;
 
 use DOMDocument;
 use Exception;
@@ -107,7 +107,7 @@ class ValidateXmlCommand extends Command
 
         $this->output->writeln('<fg=yellow;bg=blue>#StandWith</><fg=blue;bg=yellow>Ukraine</>');
 
-        $this->symfonyStyle->title((string)__('Imagination Media XML Validator'));
+        $this->symfonyStyle->title((string)__('Joseph Leedy XML Validator'));
 
         array_walk(
             $paths,

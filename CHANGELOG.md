@@ -1,4 +1,4 @@
-# Changelog for XML Validator by Imagination Media
+# Changelog for XML Validator by Joseph Leedy
 
 All notable changes to this extension will be documented in this file.
 
@@ -10,6 +10,10 @@ For more information about the extension, please refer to the
 [README](./README.md) document.
 
 ## [Unreleased]
+
+## [0.3.0] — 2023-02-16
+### Changed
+- Updated code and documentation to reflect new ownership of project
 
 ## [0.2.1] — 2022-11-17
 ### Fixed
@@ -25,7 +29,7 @@ the Magento files installed and no database (useful in CI/CD environments)
 ### Added
 - Created initial rough MVP of tool with support for CLI and GitHub Actions
 
-[Unreleased]: https://github.com/Imagination-Media/magento-module-xml-validator/compare/0.2.1...develop
-[0.1.0]: https://github.com/Imagination-Media/magento-module-xml-validator/releases/tag/0.1.0
-[0.2.0]: https://github.com/Imagination-Media/magento-module-xml-validator/releases/tag/0.2.0
-[0.2.1]: https://github.com/Imagination-Media/magento-module-xml-validator/releases/tag/0.2.1
+[Unreleased]: https://github.com/JosephLeedy/magento-module-xml-validator/compare/0.2.1...develop
+[0.1.0]: https://github.com/JosephLeedy/magento-module-xml-validator/releases/tag/0.1.0
+[0.2.0]: https://github.com/JosephLeedy/magento-module-xml-validator/releases/tag/0.2.0
+[0.2.1]: https://github.com/JosephLeedy/magento-module-xml-validator/releases/tag/0.2.1

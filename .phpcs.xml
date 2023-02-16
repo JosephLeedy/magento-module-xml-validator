@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/squizlabs/PHP_CodeSniffer/master/phpcs.xsd"
-         name="Imagination Media Magento Coding Standards">
-    <description>Coding standards for the XmlValidator Adobe Commerce extension</description>
+         name="XML Validator Magento Coding Standards">
+    <description>Coding standards for the XML Validator Adobe Commerce extension</description>
     <arg name="extensions" value="php"/>
     <arg name="colors"/>
     <arg value="sp"/>

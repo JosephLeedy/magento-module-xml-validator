@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace ImaginationMedia\XmlValidator\Test\Integration\Console\Command;
+namespace JosephLeedy\XmlValidator\Test\Integration\Console\Command;
 
-use ImaginationMedia\XmlValidator\Console\Command\ValidateXmlCommand;
-use ImaginationMedia\XmlValidator\Test\Integration\_stubs\Setup\Console\CommandList;
+use JosephLeedy\XmlValidator\Console\Command\ValidateXmlCommand;
+use JosephLeedy\XmlValidator\Test\Integration\_stubs\Setup\Console\CommandList;
 use Magento\Framework\Config\Dom\UrnResolver;
 use Magento\Framework\DomDocument\DomDocumentFactory;
 use Magento\Framework\Filesystem\Driver\File;
@@ -107,7 +107,7 @@ final class ValidateXmlCommandTest extends TestCase
         $commandTester->execute($commandOptions);
 
         $expectedOutput = <<<OUTPUT
-        ::error file=app/code/ImaginationMedia/XmlValidator/Test/Integration/_files/invalid/module.xml,line=4,col=0::Element 'module': This element is not expected.%0A
+        ::error file=app/code/JosephLeedy/XmlValidator/Test/Integration/_files/invalid/module.xml,line=4,col=0::Element 'module': This element is not expected.%0A
 
         OUTPUT;
         $expectedReturnCode = 1;
@@ -146,8 +146,8 @@ final class ValidateXmlCommandTest extends TestCase
                 'expectedOutput' => <<<OUTPUT
                 #StandWithUkraine
 
-                Imagination Media XML Validator
-                ===============================
+                Joseph Leedy XML Validator
+                ==========================
 
                  Validating {$relativePaths['valid_module_xml']} against vendor/magento/framework/Module/etc/module.xsd...
 
@@ -167,8 +167,8 @@ final class ValidateXmlCommandTest extends TestCase
                 'expectedOutput' => <<<OUTPUT
                 #StandWithUkraine
 
-                Imagination Media XML Validator
-                ===============================
+                Joseph Leedy XML Validator
+                ==========================
 
                  Validating {$relativePaths['invalid_module_xml']} against vendor/magento/framework/Module/etc/module.xsd...
 
@@ -192,8 +192,8 @@ final class ValidateXmlCommandTest extends TestCase
                 'expectedOutput' => <<<OUTPUT
                 #StandWithUkraine
 
-                Imagination Media XML Validator
-                ===============================
+                Joseph Leedy XML Validator
+                ==========================
 
                  Validating {$relativePaths['valid_module_xml']} against vendor/magento/framework/Module/etc/module.xsd...
 
@@ -220,12 +220,11 @@ final class ValidateXmlCommandTest extends TestCase
                 'expectedOutput' => <<<OUTPUT
                 #StandWithUkraine
 
-                Imagination Media XML Validator
-                ===============================
+                Joseph Leedy XML Validator
+                ==========================
 
-                 [WARNING] XML file
-                           "{$relativePaths['valid_config_xml']}" does
-                           not have a Magento schema defined
+                 [WARNING] XML file "{$relativePaths['valid_config_xml']}"
+                           does not have a Magento schema defined
 
                 1 of 1 file is valid
 
@@ -241,8 +240,8 @@ final class ValidateXmlCommandTest extends TestCase
                 'expectedOutput' => <<<OUTPUT
                 #StandWithUkraine
 
-                Imagination Media XML Validator
-                ===============================
+                Joseph Leedy XML Validator
+                ==========================
 
                  [WARNING] File "{$paths['excluded_phpunit_xml']}" is not a Magento XML file.
 

@@ -8,6 +8,6 @@ index ae65e82..26770ab 100644
              \Magento\Setup\Console\Command\UninstallCommand::class,
 -            \Magento\Setup\Console\Command\DeployStaticContentCommand::class
 +            \Magento\Setup\Console\Command\DeployStaticContentCommand::class,
-+            \ImaginationMedia\XmlValidator\Console\Command\ValidateXmlCommand::class
++            \JosephLeedy\XmlValidator\Console\Command\ValidateXmlCommand::class
          ];
      }
