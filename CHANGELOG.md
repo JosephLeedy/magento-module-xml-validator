@@ -11,6 +11,10 @@ For more information about the extension, please refer to the
 
 ## [Unreleased]
 
+## [0.3.0] — 2023-02-16
+### Changed
+- Updated code and documentation to reflect new ownership of project
+
 ## [0.2.1] — 2022-11-17
 ### Fixed
 - Warnings for missing Magento schema declarations are no longer returned as
