@@ -1,5 +1,5 @@
 {
-  "name": "imaginationmedia/module-xml-validator",
+  "name": "joseph-leedy/module-xml-validator",
   "description": "Adds a console command for validating XML files against their configured schema",
   "type": "magento2-module",
   "version": "0.2.1",
@@ -30,19 +30,22 @@
       "src/registration.php"
     ],
     "psr-4": {
-      "ImaginationMedia\\XmlValidator\\": "src/"
+      "JosephLeedy\\XmlValidator\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "ImaginationMedia\\XmlValidator\\Test\\": "test/"
+      "JosephLeedy\\XmlValidator\\Test\\": "test/"
     }
+  },
+  "replace": {
+      "imaginationmedia/module-xml-validator": "*"
   },
   "authors": [
     {
       "role": "Developer",
       "name": "Joseph Leedy",
-      "email": "joseph@imaginationmedia.com"
+      "email": "joseph@leedy.us"
     }
   ],
   "config": {

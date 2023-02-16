@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ImaginationMedia\XmlValidator\Test\Integration\_stubs\Setup\Console;
+namespace JosephLeedy\XmlValidator\Test\Integration\_stubs\Setup\Console;
 
 use Symfony\Component\Console\Command\Command;
 

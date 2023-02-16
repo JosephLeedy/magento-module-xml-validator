@@ -1,4 +1,4 @@
-"Imagination Media XML Validator","Imagination Media XML Validator"
+"Joseph Leedy XML Validator","Joseph Leedy XML Validator"
 "File ""%1"" is not a Magento XML file.","File ""%1"" is not a Magento XML file."
 "Could not process %1. Error: %2","Could not process %1. Error: %2"
 "{valid_files} of {total_files, plural, =1{# file is} other{# files are}} valid","{valid_files} of {total_files, plural, =1{# file is} other{# files are}} valid"
