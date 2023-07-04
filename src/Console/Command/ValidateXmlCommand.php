@@ -60,6 +60,7 @@ class ValidateXmlCommand extends Command
     private File $driver;
     private UrnResolver $urnResolver;
     private bool $isEnvironmentGitHubActions = false;
+    private bool $isEnvironmentCI = false;
     private OutputInterface $output;
     private SymfonyStyle $symfonyStyle;
 
@@ -93,6 +94,7 @@ class ValidateXmlCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->isEnvironmentGitHubActions = (bool)getenv('GITHUB_ACTIONS');
+        $this->isEnvironmentCI = (bool)getenv('CI');
         $this->output = $output;
         $this->symfonyStyle = new SymfonyStyle($input, $this->output);
         $paths = $input->getArgument('paths');
@@ -247,8 +249,10 @@ class ValidateXmlCommand extends Command
             '\\/'
         );
 
-        $this->symfonyStyle->text((string)__('Validating %1 against %2...', $fileName, $schemaPath));
-        $this->symfonyStyle->newLine();
+        if (!$this->isEnvironmentCI) {
+            $this->symfonyStyle->text((string)__('Validating %1 against %2...', $fileName, $schemaPath));
+            $this->symfonyStyle->newLine();
+        }
 
         $errors = Dom::validateDomDocument($domDocument, $schemaLocations[1], "Line %line%: %message%\n");
 
@@ -267,7 +271,9 @@ class ValidateXmlCommand extends Command
             return false;
         }
 
-        $this->symfonyStyle->success((string)__('XML is valid.'));
+        if (!$this->isEnvironmentCI) {
+            $this->symfonyStyle->success((string)__('XML is valid.'));
+        }
 
         return true;
     }
