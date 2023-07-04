@@ -59,7 +59,7 @@ class ValidateXmlCommand extends Command
     private DomDocumentFactory $domDocumentFactory;
     private File $driver;
     private UrnResolver $urnResolver;
-    private bool $isEnvironmentGitHubActions = false;
+    private bool $isEnvironmentCI = false;
     private OutputInterface $output;
     private SymfonyStyle $symfonyStyle;
 
@@ -92,7 +92,7 @@ class ValidateXmlCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->isEnvironmentGitHubActions = (bool)getenv('GITHUB_ACTIONS');
+        $this->isEnvironmentCI = (bool)getenv('CI');
         $this->output = $output;
         $this->symfonyStyle = new SymfonyStyle($input, $this->output);
         $paths = $input->getArgument('paths');
@@ -101,7 +101,7 @@ class ValidateXmlCommand extends Command
         $fileCount = 0;
         $validFiles = 0;
 
-        if ($this->isEnvironmentGitHubActions) {
+        if ($this->isEnvironmentCI) {
             $this->output->setVerbosity(OutputInterface::VERBOSITY_QUIET);
         }
 
@@ -281,7 +281,7 @@ class ValidateXmlCommand extends Command
      */
     private function outputErrors(array $errors): void
     {
-        if ($this->isEnvironmentGitHubActions) {
+        if ($this->isEnvironmentCI) {
             $this->outputToGitHubActions($errors);
 
             return;
@@ -303,7 +303,7 @@ class ValidateXmlCommand extends Command
      */
     private function outputWarnings(array $warnings): void
     {
-        if ($this->isEnvironmentGitHubActions) {
+        if ($this->isEnvironmentCI) {
             $this->outputToGitHubActions($warnings, 'warning');
 
             return;
